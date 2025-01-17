@@ -1,5 +1,5 @@
 {%  load static %}
-<nav class="navbar navbar-dark bg-danger bg-danger shadow-lg" >
+<!-- <nav class="navbar navbar-dark bg-danger bg-danger shadow-lg" >
     <div class="container-fluid">
       <a class="navbar-brand">
         <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="50" height="50" style="margin-left: 10px; padding: 3px;">
@@ -9,4 +9,41 @@
         <button class="btn btn-success btn-outline-success" style="color:white" type="submit">Search</button>
       </form>
     </div>
-  </nav>
+  </nav> -->
+
+  <nav class="navbar navbar-dark bg-danger shadow-lg">
+    <div class="container-fluid">
+        <!-- Logo Section -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="50" height="50" style="margin-left: 10px; padding: 3px;">
+        </a>
+        
+        <!-- Button Section -->
+        <div>
+          {% if user.is_authenticated %}
+          <a href="#" style="font-weight: bold; color: #f8f9fa; margin-right: 15px; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s;">
+            Welcome, {{ user.first_name }}
+        </a>
+              <a href="{% url 'logout' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log Out</a>
+          {% else %}
+              <a href="{% url 'register' %}" class="btn btn-outline-light custom-btn" style="color: white;">Sign Up</a>
+              <a href="{% url 'login' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log In</a>
+          {% endif %}
+            </div>
+    </div>
+</nav>
+
+<style>
+  /* Custom Button Styles */
+  .custom-btn {
+      color: white;
+      border-color: white;
+      transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .custom-btn:hover {
+      background-color:black; /* Change to a softer color */
+      color: #000000; /* Change the text color */
+  }
+</style>
+

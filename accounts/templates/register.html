@@ -7,8 +7,9 @@
     
 
     <div class="card col-6 mx-auto shadow" style="padding: 40px; border: none;">
-        {% include 'utils/alert.html' %}
         <form method="POST">
+            <h3 class="text-center mb-4" style="font-weight: bold;">Registration</h3>
+            {% include 'utils/alert.html' %}
             {% csrf_token %}
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">First Name</label>
@@ -25,7 +26,8 @@
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Phone Number</label>
-                <input type="number" name = "phone_number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="text" name = "phone_number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
             </div>
                 <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
