@@ -2,8 +2,9 @@ from django.shortcuts import render,redirect,HttpResponse
 from .models import HotelUser
 from django.db.models import Q
 from django.contrib import messages
-from .utils import generate_random_token, send_email_verification
+from .utils import generate_random_token, send_email_verification, send_email_otp, generate_otp
 from django.contrib.auth import authenticate, login, logout
+import random
 
 def login_user(request):
     if request.method == 'POST':
@@ -22,10 +23,9 @@ def login_user(request):
         
         user = authenticate(request, username=hotel_user[0].phone_number, password=password)
         if user is not None:
-            # messages.success(request, "Login Success")
             login(request , user)
             return redirect('home')
-        messages.warning(request, "Account not verified")
+        messages.warning(request, "Invalid credentials")
         return redirect('login')
     return render(request, 'login.html')
 
@@ -75,5 +75,39 @@ def verify_email(request, token):
     except HotelUser.DoesNotExist:
         return HttpResponse("Invalid Token")
 
-def otp_authentication(request):
-    return render(request, 'otp_authen.html')
+def login_with_otp(request):
+    if request.method == 'POST':
+        email_id = request.POST.get('email')
+
+        hotel_user = HotelUser.objects.filter(email=email_id)
+
+        if not hotel_user.exists():
+            messages.warning(request, 'Invalid credentials')
+            return redirect('otp-login')
+        
+        if not hotel_user[0].is_verified:
+            messages.warning(request, "Account not verified")
+            return redirect('otp-login')
+        
+        if hotel_user[0] is not None:
+            otp = generate_otp()
+            send_email_otp(email_id, otp)
+            hotel_user.update(otp=otp)
+            messages.success(request, "Login OTP sent to registered email")
+            return redirect(f'/accounts/otp-enter/{email_id}')
+        messages.warning(request, "Invalid credentials")
+        return redirect('otp-login')
+    return render(request, 'otp_login.html')
+
+def otp_enter(request, email_id):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        hotel_user = HotelUser.objects.filter(email=email_id)
+
+        if hotel_user.first().otp==otp:
+            login(request , hotel_user[0])
+            hotel_user.update(otp=None)
+            return redirect('home')
+        messages.warning(request, "Wrong OTP")
+        return redirect(f'/accounts/otp-enter/{email_id}')
+    return render(request, 'otp_enter.html')

@@ -6,6 +6,6 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('email-verify/<token>/', views.verify_email, name='email-verify'),
-    path('otp-authentication/', views.otp_authentication, name='otp-authentication'),
-
+    path('otp-login/', views.login_with_otp, name='otp-login'),
+    path('otp-enter/<email_id>/', views.otp_enter, name='otp-enter'),
 ]
