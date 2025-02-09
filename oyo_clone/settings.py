@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'accounts',
+    'users',
+    'vendors',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,7 @@ WSGI_APPLICATION = 'oyo_clone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'oyo_cloneDb',
+        'NAME': 'oyo_clone_project',
         'USER': 'root',
         'PASSWORD': 'rootPassword@123',
         'HOST':'localhost',

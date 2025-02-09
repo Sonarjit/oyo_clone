@@ -1,15 +1,4 @@
 {%  load static %}
-<!-- <nav class="navbar navbar-dark bg-danger bg-danger shadow-lg" >
-    <div class="container-fluid">
-      <a class="navbar-brand">
-        <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="50" height="50" style="margin-left: 10px; padding: 3px;">
-      </a>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-success btn-outline-success" style="color:white" type="submit">Search</button>
-      </form>
-    </div>
-  </nav> -->
 
   <nav class="navbar navbar-dark bg-danger shadow-lg">
     <div class="container-fluid">
@@ -24,10 +13,10 @@
           <a href="#" style="font-weight: bold; color: #f8f9fa; margin-right: 15px; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s;">
             Welcome, {{ user.first_name }}
         </a>
-              <a href="{% url 'logout' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log Out</a>
+              <a href="{% url 'user-logout' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log Out</a>
           {% else %}
-              <a href="{% url 'register' %}" class="btn btn-outline-light custom-btn" style="color: white;">Sign Up</a>
-              <a href="{% url 'login' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log In</a>
+              <a href="{% url 'user-register' %}" class="btn btn-outline-light custom-btn" style="color: white;">Sign Up</a>
+              <a href="{% url 'user-login' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log In</a>
           {% endif %}
             </div>
     </div>
