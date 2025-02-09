@@ -24,10 +24,14 @@ def vendor_login(request):
         user = authenticate(request, username=hotel_user[0].phone_number, password=password)
         if user is not None:
             login(request , user)
-            return redirect('home')
+            return redirect('vendor-dashboard')
         messages.warning(request, "Invalid credentials")
         return redirect('vendor-login')
     return render(request, 'vendor_login.html')
+
+def vendor_logout(request):
+    logout(request)
+    return redirect('vendor-login')
 
 def vendor_register(request):
     if request.method == 'POST':
@@ -104,7 +108,40 @@ def vendor_otp_enter(request, email_id):
         if hotel_user.first().otp==otp:
             login(request , hotel_user[0])
             hotel_user.update(otp=None)
-            return redirect('home')
+            return redirect('vendor-dashboard')
         messages.warning(request, "Wrong OTP")
         return redirect(f'/vendors/vendor-otp-enter/{email_id}')
     return render(request, 'vendor_otp_enter.html')
+
+def vendor_dashboard(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email_id = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        business_name = request.POST.get('business_name')
+        password = request.POST.get('password')
+        
+        hotel_user = HotelVendor.objects.filter(Q(email=email_id) | Q(phone_number=phone_number))
+
+        if hotel_user.exists():
+            messages.warning(request, 'User already exists')
+            return redirect('vendor-register')
+
+        hotel_user = HotelVendor.objects.create(
+            username = phone_number,
+            first_name = first_name,
+            last_name = last_name,
+            email = email_id,
+            phone_number = phone_number,
+            email_token = generate_random_token()
+        )
+        hotel_user.set_password(password)
+        hotel_user.save()
+
+        send_vendor_email_verification(email_id, hotel_user.email_token)
+        messages.success(request, 'User created successfully. Please varify your email')
+        return redirect('vendor-register')
+    
+    return render(request, 'vendor_dashboard.html')
+
