@@ -3,82 +3,32 @@
 {% block start %}
 
 <div class="container mb-5">
-        
+
+    <div class="d-flex justify-content-start mt-3">
+        <a href="{% url 'add-hotel' %}" class="btn btn-success">Add Hotel</a>
+    </div>  
     <div class ="row">
+        {% for hotel in hotels %} 
         <div class="col-md-4">
-
+              
             <div class="card shadow mt-4" style="width: 18rem;">
                 <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
                 <div class="card-body">
-                  <h5 class="card-title">Hotel Classic</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <h5 class="card-title" style="margin: 0;padding: 0;">{{hotel.hotel_name}}</h5>
+                  <p class="card-text" style="margin: 0;padding: 0;">{{hotel.hotel_description}}</p>
+                  <p class="card-text" style="margin: 0;padding: 0;">Location: {{hotel.hotel_location}}</p>
+                  <p class="card-text" style="margin: 0;padding: 0;">Hotel Price: <span style="color: red;">{{ hotel.hotel_price }}</span></p>
+                  <p class="card-text" style="margin: 0;padding: 0;">Offer Price: <span style="color: green;">{{ hotel.hotel_offer_price }}</span></p>
                   <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  <span class="badge rounded-pill text-bg-primary">Swimming Pool</span>
-                  <span class="badge rounded-pill text-bg-primary">AC</span>
+                  {% for amenety in hotel.ameneties.all %} 
+                  <span class="badge rounded-pill text-bg-primary">{{amenety.name}}</span>
+                  {% endfor %}
                 </div>
             </div>
+            
 
         </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow mt-4" style="width: 18rem;">
-                <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
-                <div class="card-body">
-                  <h5 class="card-title">Hotel Classic</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  <span class="badge rounded-pill text-bg-primary">Swimming Pool</span>
-                  <span class="badge rounded-pill text-bg-primary">AC</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow mt-4" style="width: 18rem;">
-                <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
-                <div class="card-body">
-                  <h5 class="card-title">Hotel Classic</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  <span class="badge rounded-pill text-bg-primary">Swimming Pool</span>
-                  <span class="badge rounded-pill text-bg-primary">AC</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow mt-4" style="width: 18rem;">
-                <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
-                <div class="card-body">
-                  <h5 class="card-title">Hotel Classic</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  <span class="badge rounded-pill text-bg-primary">Swimming Pool</span>
-                  <span class="badge rounded-pill text-bg-primary">AC</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow mt-4" style="width: 18rem;">
-                <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
-                <div class="card-body">
-                  <h5 class="card-title">Hotel Classic</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  <span class="badge rounded-pill text-bg-primary">Swimming Pool</span>
-                  <span class="badge rounded-pill text-bg-primary">AC</span>
-                </div>
-            </div>
-
-        </div>
+        {% endfor %}
     </div>
 
 </div>

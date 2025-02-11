@@ -9,13 +9,13 @@
         <!-- Button Section -->
         <div>
           {% if user.is_authenticated %}
-          <a href="#" style="font-weight: bold; color: #f8f9fa; margin-right: 15px; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s;">
-            Welcome, {{ user.first_name }}
-        </a>
+            <a href="#" style="font-weight: bold; color: #f8f9fa; margin-right: 15px; text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.3s;">
+              Welcome, {{ user.first_name }}
+            </a>
               <a href="{% url 'vendor-logout' %}" class="btn btn-outline-light custom-btn" style="color: white;">Log Out</a>
           
           {% endif %}
-            </div>
+        </div>
     </div>
 </nav>
 

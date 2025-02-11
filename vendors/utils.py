@@ -1,5 +1,8 @@
 import uuid
 from django.core.mail import send_mail
+from django.utils.text import slugify
+from .models import Hotel
+
 from django.conf import settings
 import random
 
@@ -36,3 +39,10 @@ def send_email_otp(email, otp):
     [email],
     fail_silently=False,
 )
+    
+def generate_slug(hotel_name):
+    slug = slugify(hotel_name) + '-' + str(uuid.uuid4()).split('-')[0]
+    # check if slug already exists
+    if Hotel.objects.filter(hotel_slug=slug).exists():
+        return generate_slug(hotel_name)
+    return slug

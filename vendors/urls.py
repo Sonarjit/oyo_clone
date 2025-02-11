@@ -9,4 +9,5 @@ urlpatterns = [
     path('vendor-otp-login/', views.vendor_login_with_otp, name='vendor-otp-login'),
     path('vendor-otp-enter/<email_id>/', views.vendor_otp_enter, name='vendor-otp-enter'),
     path('vendor-dashboard/', views.vendor_dashboard, name='vendor-dashboard'),
+    path('add-hotel/', views.add_hotel, name='add-hotel'),
 ]

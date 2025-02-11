@@ -8,5 +8,5 @@ class HotelUser(User):
     otp = models.CharField(max_length=100, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.email_token
+    class Meta:
+        db_table = "Hotel User"

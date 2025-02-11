@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .utils import generate_random_token, send_email_verification, send_email_otp, generate_otp
-
+from django.contrib.auth.decorators import login_required
 
 def login_user(request):
     if request.method == 'POST':
@@ -24,11 +24,12 @@ def login_user(request):
         user = authenticate(request, username=hotel_user[0].phone_number, password=password)
         if user is not None:
             login(request , user)
-            return redirect('home')
+            return redirect('user-dashboard')
         messages.warning(request, "Invalid credentials")
         return redirect('user-login')
     return render(request, 'login.html')
 
+@login_required(login_url='user-login')
 def logout_user(request):
     logout(request)
     return redirect('user-login')
@@ -107,8 +108,11 @@ def otp_enter(request, email_id):
         if hotel_user.first().otp==otp:
             login(request , hotel_user[0])
             hotel_user.update(otp=None)
-            return redirect('home')
+            return redirect('user-dashboard')
         messages.warning(request, "Wrong OTP")
         return redirect(f'/users/user-otp-enter/{email_id}')
     return render(request, 'otp_enter.html')
 
+@login_required(login_url='user-login')
+def user_dashboard(request):
+    return render(request, 'user_dashboard.html')

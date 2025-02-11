@@ -8,10 +8,19 @@ class HotelVendor(User):
     email_token = models.CharField(max_length=100, blank=True, null=True)
     otp = models.CharField(max_length=100, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = "Hotel Vendor"
+
 
 class Ameneties(models.Model):
     name = models.CharField(max_length = 1000)
     icon = models.ImageField(upload_to="amemetiesIcons")
+    class Meta:
+        db_table = "vendors_ameneties"
+
+    def __str__(self)->str:
+        return self.name
 
 class Hotel(models.Model):
     hotel_name  = models.CharField(max_length=100)
@@ -23,6 +32,13 @@ class Hotel(models.Model):
     hotel_offer_price = models.FloatField()
     hotel_location = models.TextField()
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "vendors_hotel"
+
+    def __str__(self)->str:
+        return self.hotel_name
+
 
 class HotelImages(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="images")

@@ -8,4 +8,5 @@ urlpatterns = [
     path('user-email-verify/<token>/', views.verify_email, name='user-email-verify'),
     path('user-otp-login/', views.login_with_otp, name='user-otp-login'),
     path('user-otp-enter/<email_id>/', views.otp_enter, name='user-otp-enter'),
+    path('user-dashboard/', views.user_dashboard, name='user-dashboard'),
 ]

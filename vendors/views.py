@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.db.models import Q
 from django.contrib import messages
-from .utils import generate_random_token, send_email_otp, generate_otp, send_vendor_email_verification
+from .utils import generate_random_token, send_email_otp, generate_otp, send_vendor_email_verification,generate_slug
 from django.contrib.auth import authenticate, login, logout
-from .models import HotelVendor
+from .models import HotelVendor, Ameneties, Hotel
+from django.contrib.auth.decorators import login_required
 
 
 def vendor_login(request):
@@ -29,6 +30,7 @@ def vendor_login(request):
         return redirect('vendor-login')
     return render(request, 'vendor_login.html')
 
+@login_required(login_url='vendor-login')
 def vendor_logout(request):
     logout(request)
     return redirect('vendor-login')
@@ -113,35 +115,52 @@ def vendor_otp_enter(request, email_id):
         return redirect(f'/vendors/vendor-otp-enter/{email_id}')
     return render(request, 'vendor_otp_enter.html')
 
+@login_required(login_url='vendor-login')
 def vendor_dashboard(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email_id = request.POST.get('email')
-        phone_number = request.POST.get('phone_number')
-        business_name = request.POST.get('business_name')
-        password = request.POST.get('password')
-        
-        hotel_user = HotelVendor.objects.filter(Q(email=email_id) | Q(phone_number=phone_number))
+    # here get the list of all the hotels for that particular vendor and pass it to the template
+    vendor_id = HotelVendor.objects.get(id = request.user.id)
+    hotels = Hotel.objects.filter(hotel_owner=vendor_id)
 
-        if hotel_user.exists():
-            messages.warning(request, 'User already exists')
-            return redirect('vendor-register')
+    context = {
+        'hotels': hotels
+    }
 
-        hotel_user = HotelVendor.objects.create(
-            username = phone_number,
-            first_name = first_name,
-            last_name = last_name,
-            email = email_id,
-            phone_number = phone_number,
-            email_token = generate_random_token()
-        )
-        hotel_user.set_password(password)
-        hotel_user.save()
-
-        send_vendor_email_verification(email_id, hotel_user.email_token)
-        messages.success(request, 'User created successfully. Please varify your email')
-        return redirect('vendor-register')
+    print(hotels)
     
-    return render(request, 'vendor_dashboard.html')
+    return render(request, 'vendor_dashboard.html', context=context)
 
+@login_required(login_url='vendor-login')
+def add_hotel(request):
+    ameneties = Ameneties.objects.all() 
+
+    if request.method == 'POST':
+        hotel_name = request.POST.get('hotel_name')
+        hotel_description = request.POST.get('hotel_description')
+        ameneties_selected = request.POST.getlist('ameneties')
+        hotel_price = request.POST.get('hotel_price')
+        hotel_offer_price = request.POST.get('hotel_offer_price')
+        hotel_location = request.POST.get('hotel_location')
+        hotel_slug = generate_slug(hotel_name=hotel_name)
+        hotel_vendor = HotelVendor.objects.get(id = request.user.id)
+
+        hotel = Hotel.objects.create(
+            hotel_name = hotel_name,
+            hotel_description = hotel_description,
+            hotel_slug = hotel_slug,
+            hotel_owner = hotel_vendor,
+            hotel_price = hotel_price,
+            hotel_offer_price = hotel_offer_price,
+            hotel_location = hotel_location,
+        )
+
+        for amenety in ameneties_selected:
+            amenity = Ameneties.objects.get(id = amenety)
+            hotel.ameneties.add(amenity)
+            hotel.save()
+
+        messages.success(request, "Hotel added successfully")
+
+        return redirect('add-hotel')
+        
+       
+    return render(request, 'add_hotel.html', context={'ameneties': ameneties})
