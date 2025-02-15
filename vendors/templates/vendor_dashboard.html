@@ -4,15 +4,20 @@
 
 <div class="container mb-5">
 
-    <div class="d-flex justify-content-start mt-3">
+    <div class="d-flex justify-content-start mt-3 mb-1">
         <a href="{% url 'add-hotel' %}" class="btn btn-success">Add Hotel</a>
-    </div>  
+    </div>
+    <div>
+        {% include "utils/alert.html" %}
+    </div>
     <div class ="row">
         {% for hotel in hotels %} 
         <div class="col-md-4">
               
             <div class="card shadow mt-4" style="width: 18rem;">
-                <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg" class="card-img-top" alt="CARD">
+                <!-- <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?cs=srgb&dl=pexels-pixabay-261102.jpg&fm=jpg class="card-img-top" alt="CARD"> -->
+                <img src="/media/{{hotel.images.first.image}}" class="card-img-top" alt="CARD">
+                
                 <div class="card-body">
                   <h5 class="card-title" style="margin: 0;padding: 0;">{{hotel.hotel_name}}</h5>
                   <p class="card-text" style="margin: 0;padding: 0;">{{hotel.hotel_description}}</p>
@@ -24,6 +29,9 @@
                   <span class="badge rounded-pill text-bg-primary">{{amenety.name}}</span>
                   {% endfor %}
                 </div>
+                <a href="{% url 'hotel-image' hotel.hotel_slug %}" class="btn btn-success" style="border-radius: 4px; margin: 0px;padding: 0;" >Image</a>
+                <a href="{% url 'edit-hotel-details' hotel.hotel_slug %}" class="btn btn-warning" style="border-radius: 4px;margin: 0px;padding: 0;">Edit</a>
+                <a href="{% url 'hotel-delete' hotel.hotel_slug %}"     class="btn btn-danger" style="border-radius: 4px;margin: 0px;padding: 0;">Delete</a>
             </div>
             
 

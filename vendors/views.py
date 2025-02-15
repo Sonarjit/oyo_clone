@@ -1,9 +1,9 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.contrib import messages
 from .utils import generate_random_token, send_email_otp, generate_otp, send_vendor_email_verification,generate_slug
 from django.contrib.auth import authenticate, login, logout
-from .models import HotelVendor, Ameneties, Hotel
+from .models import HotelVendor, Ameneties, Hotel, HotelImages
 from django.contrib.auth.decorators import login_required
 
 
@@ -122,10 +122,8 @@ def vendor_dashboard(request):
     hotels = Hotel.objects.filter(hotel_owner=vendor_id)
 
     context = {
-        'hotels': hotels
+        'hotels': hotels,
     }
-
-    print(hotels)
     
     return render(request, 'vendor_dashboard.html', context=context)
 
@@ -164,3 +162,65 @@ def add_hotel(request):
         
        
     return render(request, 'add_hotel.html', context={'ameneties': ameneties})
+
+@login_required(login_url='vendor-login')
+def hotel_images(request, hotel_slug):
+    hotel = Hotel.objects.get(hotel_slug=hotel_slug)
+
+    if request.method == 'POST':
+        image = request.FILES['image']
+
+        HotelImages.objects.create(
+        hotel = hotel,
+        image = image
+        )
+        return redirect(f'/vendors/hotel-image/{hotel_slug}')
+    # passing the instance of all the HotelImages objects for that particular hotel
+    return render(request, 'hotel_image.html', context = {'images' : hotel.images.all(), 'hotel' : hotel})
+
+@login_required(login_url='vendor-login')
+def delete_image(request, image_id, hotel_slug):
+    hotel = Hotel.objects.get(hotel_slug=hotel_slug)
+    hotel_image = HotelImages.objects.get(id = image_id)
+    hotel_image.delete()
+    messages.success(request, "Hotel Image deleted")
+    return render(request, 'hotel_image.html', context = {'images' : hotel.images.all(), 'hotel' : hotel})
+
+
+@login_required(login_url='vendor-login')
+def delete_hotel(request, hotel_slug):
+    hotel = Hotel.objects.get(hotel_slug=hotel_slug)
+    hotel.delete()
+    messages.success(request, "Hotel deleted")
+    return redirect('vendor-dashboard')
+
+@login_required(login_url='vendor-login')
+def edit_hotel_details(request, hotel_slug):
+    hotel = Hotel.objects.get(hotel_slug=hotel_slug)
+    ameneties = Ameneties.objects.all()
+    # Check if the current user is the owner of the hotel
+    if request.user.id != hotel.hotel_owner.id:
+        return HttpResponse("You are not authorized")
+
+    if request.method == 'POST':
+        hotel_name = request.POST.get('hotel_name')
+        hotel_description = request.POST.get('hotel_description')
+        ameneties_selected = request.POST.getlist('ameneties')
+        hotel_price = request.POST.get('hotel_price')
+        hotel_offer_price = request.POST.get('hotel_offer_price')
+        hotel_location = request.POST.get('hotel_location')
+
+        hotel.hotel_name = hotel_name
+        hotel.hotel_description = hotel_description
+        hotel.hotel_price = hotel_price
+        hotel.hotel_offer_price = hotel_offer_price
+        hotel.hotel_location = hotel_location
+        hotel.save()
+
+        hotel.ameneties.clear()
+        for amenety in ameneties_selected:
+            amenity = Ameneties.objects.get(id = amenety)
+            hotel.ameneties.add(amenity)
+            hotel.save()
+        messages.success(request, "Hotel details updated")
+    return render(request, 'edit_hotel_details.html', context = {'hotel' : hotel, 'ameneties' : ameneties})

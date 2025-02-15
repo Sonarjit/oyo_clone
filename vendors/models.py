@@ -43,6 +43,7 @@ class Hotel(models.Model):
 class HotelImages(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="hotelImages")
+    is_selected = models.BooleanField(default=False)
 
 class HotelManager(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete = models.CASCADE , related_name = "hotel_managers")
